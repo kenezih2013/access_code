@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to RVE {% endblock %}</h1>
+    {% for post in posts %}
+        <a href="{{ url_for('post', access_code=post['access_code']) }}">
+            <h2>{{ post['guest_name'] }} {{ post['access_code'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ post['created'] }}</span>
+        <a href="{{ url_for('edit', id=post['access_code']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}

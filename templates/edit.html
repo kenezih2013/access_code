@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Edit "{{ post['guest_name'] }}" {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="guest_name">Guest Name</label>
+        <input type="text" name="guest_name" placeholder="Enter guest's name here"
+               class="form-control"
+               value="{{ request.form['guest_name'] or post['guest_name'] }}">
+        </input>
+    </div>
+
+    <div class="form-group">
+        <label for="host_address">Host Address</label>
+        <textarea name="host_address" placeholder="Enter your address here"
+                  class="form-control">{{ request.form['host_address'] or post['host_address'] }}</textarea>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+<hr>
+
+<form action="{{ url_for('delete', id=post['id']) }}" method="POST">
+    <input type="submit" value="Delete Post"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('Are you sure you want to delete this post?')">
+</form>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to RVE Users {% endblock %}</h1>
+    {% for user in users %}
+        <a href="{{ url_for('view', user_id=user['user_id']) }}">
+            <h2>{{ user['user_id'] }} {{ user['full_name'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ user['u_created'] }}</span>
+        <a href="{{ url_for('user_edit', user_id=user['user_id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}

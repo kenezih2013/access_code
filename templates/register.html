@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Register Users {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="full_name">Resident's Name</label>
+        <input type="text" name="full_name"
+               placeholder="Enter name here" class="form-control"
+               value="{{ request.form['full_name'] }}"></input>
+    </div>
+
+    <div class="form-group">
+        <label for="resident_address">Resident's Address</label>
+        <textarea name="resident_address" placeholder="Enter address here"
+                  class="form-control">{{ request.form['resident_address'] }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" name="email"
+               placeholder="Enter a valid email here" class="form-control"
+               value="{{ request.form['email'] }}"></input>
+    </div>
+
+    <div class="form-group">
+        <label for="validity">Validity Date</label>
+        <input type="text" name="validity_date"
+               placeholder="Enter validity date in yyyy-mm-dd format" class="form-control"
+               value="{{ request.form['validity_date'] }}"></input>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}
