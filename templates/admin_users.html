@@ -1,0 +1,17 @@
+{% extends 'base4.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to RVE Admin Users {% endblock %}</h1>
+    {% for admin_users in admin_users %}
+        <a href="{{ url_for('view_admin', admin_id=admin_users['admin_id']) }}">
+            <h2>{{ admin_users['admin_id'] }} {{ admin_users['full_name'] }}</h2>
+        </a>
+        <h4>{{ admin_users['email'] }}</h4>
+        <h5>{{ admin_users['a_profile']}}</h5>
+        <span class="badge badge-primary">{{ admin_users['a_created'] }}</span>
+        <a href="{{ url_for('view_admin', admin_id=admin_users['admin_id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}

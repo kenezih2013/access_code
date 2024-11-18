@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to RVE Access Code App {% endblock %}</h1>
+    
+    
+    
+    <ul id="users">
+    {% if users %}
+    {% with user = users %}
+    <p> <h2><a href="{{ url_for('login')}}"><span class="badge badge-primary">Residents</span></a></h2> </p>
+    <p> <h2><a href="{{ url_for('validate')}}"><span class="badge badge-primary">Security</span></a></h2> </p>
+    <p> <h2><a href="{{ url_for('admin_login')}}"><span class="badge badge-primary">Admin</span></a></h2> </p>
+    {% endwith %}
+    {% endif %}
+    </ul>
+    
+    
+    
+    
+    
+    
+{% endblock %}
