@@ -7,9 +7,9 @@
             <h2>{{ post['guest_name'] }} {{ post['access_code'] }}</h2>
         </a>
         <span class="badge badge-primary">{{ post['created'] }}</span>
-        <a href="{{ url_for('edit', id=post['access_code']) }}">
+        <!--<a href="{{ url_for('edit', id=post['access_code']) }}">
             <span class="badge badge-warning">Edit</span>
-        </a>
+        </a>-->
         <hr>
     {% endfor %}
 {% endblock %}
