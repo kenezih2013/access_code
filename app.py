@@ -1,4 +1,5 @@
 #from faker import Faker
+import os
 import time
 import random
 import sqlite3
@@ -62,7 +63,8 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 # The 'SECRET_KEY' can be your password
-app.config['SECRET_KEY'] = '276c7290a7883b03c42ef6fb510df702'
+SECRET_KEY = os.getenv('SECRET_KEY')
+app.config['SECRET_KEY'] = SECRET_KEY
 #db = sqlite3
 
 
