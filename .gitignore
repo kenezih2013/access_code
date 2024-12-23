@@ -10,4 +10,4 @@ app
 requirement.txt
 requirements_OLD.txt
 requirementsOLD.txt
-database.db
+#database.db
