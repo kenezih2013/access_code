@@ -481,12 +481,15 @@ def view_admin(admin_id):
 def reset():
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
         # check if username and password is entered
         if not username:
             flash('Please enter a valid username', category='error')
         elif not password:
             flash('Please enter a password', category='error')
+        elif not email:
+            flash('please enter a valid email', category='error')
     #post = get_post(id)
         else:
             conn = get_db_connection()
@@ -494,18 +497,22 @@ def reset():
             a_reset = conn.execute('SELECT * FROM a_login WHERE username = ?', (username,)).fetchone()
             sa = conn.execute('SELECT admin_psswrd FROM a_login WHERE admin_psswrd = ?', (password,)).fetchone()
             # check if username is correct/registered and if password matches super admin profile
-            if not reset:
-                flash('Wrong username or not registered!', category='error')
-            elif not a_reset:
-                flash('Wrong username or not registered!', category='error')
-            elif not sa:
-                flash('You are not authorized!', category='error')
+            if sa:           
+                if reset:
+                    conn.execute('DELETE FROM user_login WHERE user_name = ?', (username,))
+                    conn.commit()
+                    conn.close()
+                    flash('"{}" was successfully deleted!'.format(reset['user_name']))
+                elif a_reset:
+                    conn.execute('DELETE FROM a_login WHERE username = ?', (username,))
+                    conn.commit()
+                    conn.close()
+                    flash('"{}" was successfully deleted!'.format(a_reset['username']))
+                else:
+                    flash('Wrong username or not registered!', category='error')
             else:
-                conn.execute('DELETE FROM user_login WHERE user_name = ?', (username,))
-                conn.execute('DELETE FROM a_login WHERE username = ?', (username,))
-                conn.commit()
-                conn.close()
-                flash('"{}" was successfully deleted!'.format(reset['user_name']))
+                flash('You are not authorized!', category='error')
+            
             alogout()
             return redirect(url_for('admin_login'))
     
@@ -521,12 +528,20 @@ def reset():
 @app.route('/<int:id>/delete', methods=('POST', 'GET'))
 def delete(id):
     post = get_post(id)
-    conn = get_db_connection()
-    conn.execute('DELETE FROM posts WHERE id = ?', (id))
-    conn.commit()
-    conn.close()
-    flash('"{}" was successfully deleted!'.format(post['guest_name']))
-    return redirect(url_for('index.html'))
+    if post:
+        conn = get_db_connection()
+        conn.execute('DELETE FROM posts WHERE access_code = ?', (id,))
+        conn.commit()
+        conn.close()
+        flash('"{}" was successfully deleted!'.format(post['guest_name']))
+        return redirect(url_for('logout'))
+    else:
+        flash('no records found', category='error')
+        return redirect(url_for('create'))
+
+    return render_template('delete.html', post=post)
+
 
 if __name__ == '__main__':
     serve(app, host="0.0.0.0", port=5050)
+    #app.run(debug=True, port=5050) # for testing/demo
