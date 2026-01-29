@@ -1,7 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base1.html' %}
 
 {% block content %}
     <h2>{% block title %} {{ post['guest_name'] }} {{ post['access_code'] }} {% endblock %}</h2>
     <h3><span class="badge badge-primary">{{ post['expired'] }}</span></h3>
+    <a href="{{ url_for('edit', id=post['access_code']) }}">
+        <span class="badge badge-warning">Edit</span>
+    </a>
     <h5><p>{{ post['host_address'] }}</p></h5>
 {% endblock %}
