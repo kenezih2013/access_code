@@ -150,11 +150,11 @@ def login():
                                     (u_name,)).fetchone()
             # if user is not registered, display a flash message
             validity_date = user['validity_date']
-            formatted_val_date = parser.parse(validity_date).strftime('%Y-%m-%d')
+            formatted_val_date = parser.parse(validity_date) #.strftime('%Y-%m-%d')
             if not user:
                 flash("Please contact the Office Admin", category='error')
             # check validity and delete from database if expired.
-            elif current_time > formatted_val_date:#user['validity_date']:
+            elif current_time > formatted_val_date: #user['validity_date']:
                 flash('Validity expired! Please contact office admin', category='error')
                 conn.execute('DELETE FROM users WHERE email = ?', (u_name, ))
                 conn.execute('DELETE FROM user_login WHERE user_name = ?', (u_name, ))
@@ -372,7 +372,7 @@ def admin_login():
             login_admin = conn.execute('SELECT * FROM a_login WHERE username = ?', \
                                     (a_name,)).fetchone()
             a_val_date = admin['validity_date']
-            formatted_a_val_date = parser.parse(a_val_date).strftime('%Y-%m-%d') # format admin validity date
+            formatted_a_val_date = parser.parse(a_val_date) #.strftime('%Y-%m-%d') # format admin validity date
             # if user is not registered, display a flash message
             if not admin:
                 flash("You are not a registered admin. Please contact the RVE EXCO", category='error')
