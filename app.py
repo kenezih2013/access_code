@@ -59,6 +59,18 @@ def get_admin(admin_id):
     # if post was found in db, return the value of the post.
     return admin
 
+
+def normalize_date_input(date_str):
+    if not date_str:
+        return None
+    date_str = date_str.strip()
+    for fmt in ('%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y', '%Y/%m/%d'):
+        try:
+            return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+        except ValueError:
+            continue
+    return None
+
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -342,20 +354,21 @@ def register():
         resident_address = request.form['resident_address']
         email = request.form['email']
         validity = request.form['validity_date']
+        normalized_validity = normalize_date_input(validity)
         # flash a message if 'Name' or 'Address' is omitted 
         if not name:
             flash('Name is required', category='error')
         elif not resident_address:
             flash('Address is required', category='error')
         elif not email:
-            flash('email is required', category='error')
-        elif not validity:
-            flash('Validity date is required', category='error')
+            flash('Email is required', category='error')
+        elif not normalized_validity:
+            flash('Validity date is required in YYYY-MM-DD or DD-MM-YYYY format', category='error')
         # Enter Name, Address, email and validity date into the db
         else:
             conn = get_db_connection()
             conn.execute('INSERT INTO users (full_name, resident_address, email, validity_date) VALUES (?, ?, ?, ?)',
-                         (name, resident_address, email, validity))
+                         (name, resident_address, email, normalized_validity))
             conn.commit()
             conn.close()
             return redirect(url_for('users'))
@@ -464,6 +477,7 @@ def admin_signup():
         session['user_name'] = request.form['email']
         profile = request.form['profile']
         validity = request.form['validity_date']
+        normalized_validity = normalize_date_input(validity)
         
         email = session.get('user_name')
         #profile = session.get('profile')
@@ -474,16 +488,16 @@ def admin_signup():
         elif not address:
             flash('Address is required', category='error')
         elif not email:
-            flash('email is required', category='error')
+            flash('Email is required', category='error')
         elif not profile:
             flash('Profile is required', category='error')
-        elif not validity:
-            flash('Validity date is required', category='error')
+        elif not normalized_validity:
+            flash('Validity date is required in YYYY-MM-DD or DD-MM-YYYY format', category='error')
         # Enter Name, Address, email, profile and validity date into the db
         else:
             conn = get_db_connection()
             conn.execute('INSERT INTO admin_users (full_name, a_address, email, validity_date, a_profile) VALUES (?, ?, ?, ?, ?)',
-                         (name, address, email, profile, validity))
+                         (name, address, email, normalized_validity, profile))
             conn.commit()
             conn.close()
             return redirect(url_for('admin_users'))
