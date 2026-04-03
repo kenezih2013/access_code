@@ -164,7 +164,11 @@ def login():
 
                 # Parse and compare dates properly
                 try:
-                    val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
+                    # Try both formats: DD-MM-YYYY and YYYY-MM-DD
+                    try:
+                        val_date = datetime.strptime(validity_date, '%d-%m-%Y').date()
+                    except ValueError:
+                        val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
                     today = datetime.now().date()
                     if today > val_date:
                         flash('Validity expired! Please contact office admin', category='error')
@@ -390,11 +394,27 @@ def admin_login():
                 flash("You are not a registered admin. Please contact the RVE EXCO", category='error')
                 conn.close()
                 return render_template('admin_login.html')
-            a_val_date = admin['validity_date']
+            try:
+                a_val_date = admin['validity_date']
+            except KeyError:
+                a_val_date = None
+            if not a_val_date:
+                flash('Admin validity date missing. Please contact admin.', category='error')
+                conn.close()
+                return render_template('admin_login.html')
+            try:
+                # Try both formats: DD-MM-YYYY and YYYY-MM-DD
+                try:
+                    val_date = datetime.strptime(a_val_date, '%d-%m-%Y').date()
+                except ValueError:
+                    val_date = datetime.strptime(a_val_date, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Invalid admin validity date format. Please contact admin.', category='error')
+                conn.close()
+                return render_template('admin_login.html')
             today = datetime.now().date()
-            val_date = datetime.strptime(a_val_date, '%Y-%m-%d').date()
             # check validity and delete from database if expired.
-            if today > val_date: #formatted_a_val_date: #admin['validity_date']:
+            if today > val_date:
                 flash('Validity expired! Please contact office admin', category='error')
                 conn.execute('DELETE FROM admin_users WHERE email = ?', (a_name, ))
                 conn.execute('DELETE FROM a_login WHERE username = ?', (a_name, ))
