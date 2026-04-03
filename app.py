@@ -153,7 +153,10 @@ def login():
                 conn.close()
                 return render_template('login.html')
             if user:
-                validity_date = user.get('validity_date')
+                try:
+                    validity_date = user['validity_date']
+                except KeyError:
+                    validity_date = None
                 if not validity_date:
                     flash('User validity date missing. Please contact admin.', category='error')
                     conn.close()
