@@ -150,59 +150,45 @@ def login():
                                     (u_name,)).fetchone()
             if not user:
                 flash("You are not a registered user. Please contact the RVE Office Admin", category='error')
-            # if user is not registered, display a flash message
                 conn.close()
                 return render_template('login.html')
-            #validity_date = user['validity_date']
-            #valid_until = parser.parse(validity_date) #.strftime('%Y-%m-%d')
-            #if not user:
-                #flash("Please contact the Office Admin", category='error')
-            # check validity and delete from database if expired.
-            validity_date = user.get('validity_date')
-            if not validity_date:
-                flash('User validity date missing. Please contact admin.', category='error')
-                conn.close()
-                return render_template('login.html')
-
-            # Parse and compare dates properly
-            try:
-                val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
-                today = datetime.now().date()
-                if today > val_date:
-                    flash('Validity expired! Please contact office admin', category='error')
-                    conn.execute('DELETE FROM users WHERE email = ?', (u_name,))
-                    conn.execute('DELETE FROM user_login WHERE user_name = ?', (u_name,))
-                    conn.commit()
+            if user:
+                validity_date = user.get('validity_date')
+                if not validity_date:
+                    flash('User validity date missing. Please contact admin.', category='error')
                     conn.close()
                     return render_template('login.html')
-            except ValueError:
-                flash('Invalid date format. Please contact admin.', category='error')
-                conn.close()
-                return render_template('login.html')
-            #if current_time > validity_date: #user['validity_date']:
-                #flash('Validity expired! Please contact office admin', category='error')
-                #conn.execute('DELETE FROM users WHERE email = ?', (u_name, ))
-                #conn.execute('DELETE FROM user_login WHERE user_name = ?', (u_name, ))
-                #conn.commit()
-            # if user exists, store login details in the database. 
-            elif not login_user:
-                if user['email'] == u_name:
-                    conn.execute('INSERT INTO user_login (user_name, user_psswrd) VALUES (?, ?)', \
-                                (u_name, password))
-                    conn.commit()
-                    conn.close()
 
-                    #id = user['user_id']
-                    a = session["user_name"]
+                # Parse and compare dates properly
+                try:
+                    val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
+                    today = datetime.now().date()
+                    if today > val_date:
+                        flash('Validity expired! Please contact office admin', category='error')
+                        conn.execute('DELETE FROM users WHERE email = ?', (u_name,))
+                        conn.execute('DELETE FROM user_login WHERE user_name = ?', (u_name,))
+                        conn.commit()
+                        conn.close()
+                        return render_template('login.html')
+                except ValueError:
+                    flash('Invalid date format. Please contact admin.', category='error')
+                    conn.close()
+                    return render_template('login.html')
+                if not login_user:
+                    if user['email'] == u_name:
+                        conn.execute('INSERT INTO user_login (user_name, user_psswrd) VALUES (?, ?)', \
+                                    (u_name, password))
+                        conn.commit()
+                        conn.close()
+
+                        return redirect(url_for('create'))
+                
+                elif login_user['user_psswrd'] == password and login_user['user_name'] == u_name:
+                    flash('Login successful!', category='success')
                     
                     return redirect(url_for('create'))
-            
-            elif login_user['user_psswrd'] == password and login_user['user_name'] == u_name:
-                flash('Login successful!', category='success')
-                
-                return redirect(url_for('create'))
-            else:
-                flash('Wrong username or password', category='error')  
+                else:
+                    flash('Wrong username or password', category='error')  
     #validate_url()          
     return render_template('login.html')
 
