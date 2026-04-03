@@ -170,6 +170,7 @@ def login():
                     except ValueError:
                         val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
                     today = datetime.now().date()
+                    print(f"Debug: today={today}, val_date={val_date}, validity_date='{validity_date}'")  # Debug print
                     if today > val_date:
                         flash('Validity expired! Please contact office admin', category='error')
                         conn.execute('DELETE FROM users WHERE email = ?', (u_name,))
