@@ -7,6 +7,7 @@ Dockerfile
 DockerfileOLD
 app
 .env
+.venv_wsl
 requirement.txt
 requirements_OLD.txt
 requirementsOLD.txt

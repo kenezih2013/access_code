@@ -4,6 +4,7 @@ import time
 import random
 import sqlite3
 from datetime import datetime, timedelta
+from dateutil.utils import today
 from flask import Flask, render_template, request, url_for, flash, redirect, session
 from flask_session import Session
 from werkzeug.exceptions import abort
@@ -182,7 +183,12 @@ def login():
                     except ValueError:
                         val_date = datetime.strptime(validity_date, '%Y-%m-%d').date()
                     today = datetime.now().date()
-                    print(f"Debug: today={today}, val_date={val_date}, validity_date='{validity_date}'")  # Debug print
+                    #print(f"Debug: today={today}, val_date={val_date}, validity_date='{validity_date}'")  # Debug print
+                    #print("raw validity_date:", validity_date)
+                    #print("parsed val_date:", val_date)
+                    #print("today:", today)
+                    #print("today > val_date:", today > val_date)
+                    #print("today >= val_date:", today >= val_date)
                     if today > val_date:
                         flash('Validity expired! Please contact office admin', category='error')
                         conn.execute('DELETE FROM users WHERE email = ?', (u_name,))
@@ -354,7 +360,9 @@ def register():
         resident_address = request.form['resident_address']
         email = request.form['email']
         validity = request.form['validity_date']
+        #print("form validity:", validity)
         normalized_validity = normalize_date_input(validity)
+        #print("normalized_validity:", normalized_validity)
         # flash a message if 'Name' or 'Address' is omitted 
         if not name:
             flash('Name is required', category='error')
