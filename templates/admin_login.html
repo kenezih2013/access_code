@@ -1,21 +1,21 @@
-{% extends 'base1.html' %}
+{% extends 'base3.html' %}
 
 {% block content %}
-<h1>{% block title %} Login Page {% endblock %}</h1>
+<h1>{% block title %} Admin Login Page {% endblock %}</h1>
 
 <form method="post">
     <div class="form-group">
         <label for="user_name">username</label>
-        <input type="text" name="user_name"
+        <input type="text" name="username"
                placeholder="Enter your email here" class="form-control"
-               value="{{ request.form['user_name'] }}"></input>
+               value="{{ request.form['username'] }}"></input>
     </div>
 
     <div class="form-group">
         <label for="password">password</label>
-        <input type="password" name="user_psswrd"
+        <input type="password" name="admin_psswrd"
                placeholder="Enter a password here" class="form-control"
-               value="{{ request.form['user_psswrd'] }}"></input>
+               value="{{ request.form['admin_psswrd'] }}"></input>
     </div>
     
     <div class="form-group">
